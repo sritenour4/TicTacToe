@@ -2,9 +2,7 @@
 let cells = document.querySelectorAll(".row > div");
 
 let gameActive = true;
-
-// store current game state here in an array of empty strings which will allow easy tracking of played cells and validate the game state later on
-let gameState = ["", "", "", "", "", "", "", "", ""];
+const statusDisplay = document.getElementById("status-display");
 
 const winMessage = () => `Win!`;
 const drawMessage = () => `Draw!`;
@@ -24,28 +22,30 @@ function cellClicked(event) {
     else {
         event.target.textContent = "0";
     }
-    ++turnCounter;
-    //resultValidation(event);
+    turnCounter++;
+    resultValidation();
 }
 
+// Array of winning conditions
 let winConditions = [
-    [cells[0].textContent, cells[1].textContent, cells[2].textContent],
-    [cells[3].textContent, cells[4].textContent, cells[5].textContent],
-    [cells[6].textContent, cells[7].textContent, cells[8].textContent],
-    [cells[0].textContent, cells[3].textContent, cells[6].textContent],
-    [cells[1].textContent, cells[4].textContent, cells[7].textContent],
-    [cells[2].textContent, cells[5].textContent, cells[8].textContent],
-    [cells[0].textContent, cells[4].textContent, cells[8].textContent],
-    [cells[2].textContent, cells[4].textContent, cells[6].textContent],
+    [cells[0], cells[1], cells[2]],
+    [cells[3], cells[4], cells[5]],
+    [cells[6], cells[7], cells[8]],
+    [cells[0], cells[3], cells[6]],
+    [cells[1], cells[4], cells[7]],
+    [cells[2], cells[5], cells[8]],
+    [cells[0], cells[4], cells[8]],
+    [cells[2], cells[4], cells[6]],
 ];
 
 function resultValidation() {
     let roundWon = false;
     for (let i = 0; i < winConditions.length; i++) {
         let win = winConditions[i];
-        let a = gameState[win[0]];
-        let b = gameState[win[1]];
-        let c = gameState[win[2]];
+        let a = win[0].textContent;
+        let b = win[1].textContent;
+        let c = win[2].textContent;
+        
         if (a === "" || b === "" || c === "") {
             continue;
         }
@@ -59,38 +59,25 @@ function resultValidation() {
         gameActive = false;
         return;
     }
-    // check whether there are any values in our game state array that are still not populated
-    let roundDraw = !gameState.includes("");
-    if (roundDraw) {
+    //check whether there are any values in our game state array that are still not populated
+    else if (turnCounter === 9) {        
         statusDisplay.innerHTML = drawMessage();
         gameActive = false;
         return;
-    }   
-
+    }
 }
 
 function resetBoard() {
-    gameActive = true;    
+    gameActive = true;
+    turnCounter = 0;
     for (let i = 0; i < cells.length; i++) {
         cells[i].textContent = "";
-    }
+        statusDisplay.innerHTML = "";
+    }    
 }
 
 document.querySelector(".game_restart").addEventListener("click", resetBoard);
 
 
-
-
-
-
-
-
-
-// hint: cells[0].textContent will tell what text is in that cell (find out win or draw)
-// toggle player - if currently X, draw an O or if it's currently O, draw an X
-
-// if else statement are your friend
-// cells[2].textContent
- // assign it X, when a cell is clicked an X appears
 
 
